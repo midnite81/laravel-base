@@ -1,0 +1,29 @@
+{
+    "name": "midnite81/laravel-base",
+    "description": "Base Functionality for Laravel",
+    "keywords": ["sms", "laravel"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Simon Rogers",
+            "email": "webdev@centralblue.co.uk"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.9",
+        "laravel/framework": "5.*",
+    },
+    "require-dev": {
+
+    },
+    "autoload": {
+        "psr-4": {
+            "Midnite81\\LaravelBase\\": "src/"
+        }
+    },
+    "extra": {
+        "component": "package",
+        "frameworks": ["Laravel 5"]
+    },
+    "minimum-stability": "stable"
+}
