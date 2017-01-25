@@ -68,7 +68,7 @@ trait Searchable
      * @param bool $split
      * @param bool $matchAny
      */
-    protected function filterByTerms($table, array $columns, $split = false, $matchAny = true)
+    protected function filterByTerms($table, array $columns, $split = true, $matchAny = true)
     {
         $searchTermsSplit = explode(' ', $this->getSearchTerm());
 
