@@ -40,7 +40,7 @@ trait Searchable
         if (property_exists($this, 'searchableKey')) {
             return $this->searchableKey;
         }
-        return str_replace('\\','.',get_class($this)) . '.search';
+        return str_replace('\\', '.', get_class($this)) . '.search';
     }
 
     /**
@@ -65,20 +65,59 @@ trait Searchable
      *
      * @param       $table
      * @param array $columns
-     * @param bool  $split
+     * @param bool $split
+     * @param bool $matchAny
      */
-    protected function filterByTerms($table, array $columns, $split = false)
+    protected function filterByTerms($table, array $columns, $split = false, $matchAny = true)
     {
-        // $searchTermsSplit = explode(' ', $this->getSearchTerm());
+        $searchTermsSplit = explode(' ', $this->getSearchTerm());
 
-        $table->filter(function ($q) use ($columns, $split) {
-            foreach ($columns as $key=>$column) {
-                if (! $key) {
-                    $q->where($column, 'LIKE', '%' . $this->getSearchTerm() . "%");
-                } else {
-                    $q->orWhere($column, 'LIKE', '%' . $this->getSearchTerm() . "%");
+        if ($split) {
+            $table->filter(function ($q) use ($columns, $matchAny, $searchTermsSplit) {
+                if ( ! empty($columns) && ! empty($searchTermsSplit)) {
+                    foreach ($columns as $key => $column) {
+                        if ( ! $key) {
+                            $q->where(function ($query) use ($searchTermsSplit, $column, $matchAny) {
+                                foreach ($searchTermsSplit as $key => $term) {
+                                    if ( ! $key) {
+                                        $query->where($column, 'LIKE', '%' . $term . "%");
+                                    } else {
+                                        if ($matchAny) {
+                                            $query->orWhere($column, 'LIKE', '%' . $term . "%");
+                                        } else {
+                                            $query->where($column, 'LIKE', '%' . $term . "%");
+                                        }
+                                    }
+                                }
+                            });
+                        } else {
+                            $q->orWhere(function ($query) use ($searchTermsSplit, $column, $matchAny) {
+                                foreach ($searchTermsSplit as $key => $term) {
+                                    if ( ! $key) {
+                                        $query->where($column, 'LIKE', '%' . $term . "%");
+                                    } else {
+                                        if ($matchAny) {
+                                            $query->orWhere($column, 'LIKE', '%' . $term . "%");
+                                        } else {
+                                            $query->where($column, 'LIKE', '%' . $term . "%");
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            $table->filter(function ($q) use ($columns) {
+                foreach ($columns as $key => $column) {
+                    if ( ! $key) {
+                        $q->where($column, 'LIKE', '%' . $this->getSearchTerm() . "%");
+                    } else {
+                        $q->orWhere($column, 'LIKE', '%' . $this->getSearchTerm() . "%");
+                    }
+                }
+            });
+        }
     }
 }
