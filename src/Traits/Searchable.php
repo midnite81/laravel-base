@@ -1,5 +1,7 @@
 <?php
-namespace Midnite81\LaravelBase\Traits\Searchable;
+namespace Midnite81\LaravelBase\Traits;
+
+use Illuminate\Http\Request;
 
 trait Searchable
 {
@@ -75,7 +77,7 @@ trait Searchable
      * @param bool $split
      * @param bool $matchAny
      */
-    protected function filterByTerms($table, array $columns, $split = false, $matchAny = true)
+    protected function filterByTerms($table, array $columns, $split = true, $matchAny = true)
     {
         $searchTermsSplit = explode(' ', $this->getSearchTerm());
 
