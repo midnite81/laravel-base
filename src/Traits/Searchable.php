@@ -12,10 +12,9 @@ trait Searchable
      */
     public function search(Request $request)
     {
-
         session()->put($this->getSearchableKey(), $request->get('query'));
 
-        return redirect()->back();
+        return redirect()->to($this->previousUrl());
     }
 
     /**
@@ -27,7 +26,7 @@ trait Searchable
     {
         session()->forget($this->getSearchableKey());
 
-        return redirect()->back();
+        return redirect()->to($this->previousUrl());
     }
 
     /**
@@ -58,6 +57,14 @@ trait Searchable
     protected function isSearched()
     {
         return session()->has($this->getSearchableKey());
+    }
+
+    /**
+     * Get the previous url, minus the query string
+     */
+    protected function previousUrl()
+    {
+        return preg_replace('/\?(.?)$/', '', url()->previous());
     }
 
     /**
