@@ -1,5 +1,5 @@
 <?php
-namespace Midnite81\LaravelBase\Traits\Searchable;
+namespace Midnite81\LaravelBase\Traits;
 
 trait Searchable
 {
