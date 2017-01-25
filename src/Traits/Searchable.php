@@ -13,7 +13,7 @@ trait Searchable
     public function search(Request $request)
     {
 
-        $this->session->put($this->getSearchableKey(), $request->get('query'));
+        session()->put($this->getSearchableKey(), $request->get('query'));
 
         return redirect()->back();
     }
@@ -25,7 +25,7 @@ trait Searchable
      */
     public function reset()
     {
-        $this->session->forget($this->getSearchableKey());
+        session()->forget($this->getSearchableKey());
 
         return redirect()->back();
     }
