@@ -1,6 +1,8 @@
 <?php
 namespace Midnite81\LaravelBase\Traits;
 
+use Illuminate\Http\Request;
+
 trait Searchable
 {
     /**
