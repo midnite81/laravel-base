@@ -1,5 +1,5 @@
 <?php
-namespace Midnite81\Helpers;
+namespace Midnite81\LaravelBase;
 use Illuminate\Support\ServiceProvider;
 
 class BaseServiceProvider extends ServiceProvider
