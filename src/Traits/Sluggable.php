@@ -31,7 +31,7 @@ trait Sluggable
 
     protected function buildSlug()
     {
-        $name = $this->getAttribute($this->getName());
+        $name = $this->getAttribute($this->getSluggableColumn());
         return str_slug($name . '-' . $this->getAttribute('id'));
 
     }
