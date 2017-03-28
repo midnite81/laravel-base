@@ -10,11 +10,14 @@ trait Searchable
      *
      * @param Request $request
      * @return mixed
-     * @internal param $term
      */
     public function search(Request $request)
     {
         session()->put($this->getSearchableKey(), $request->get('query'));
+
+        if ($request->redirectUri) {
+            return redirect()->to($request->redirectUri);
+        }
 
         return redirect()->to($this->previousUrl());
     }
@@ -22,14 +25,20 @@ trait Searchable
     /**
      * Reset Search Term
      *
+     * @param Request $request
      * @return mixed
      */
-    public function reset()
+    public function reset(Request $request)
     {
         session()->forget($this->getSearchableKey());
 
+        if ($request->redirectUri) {
+            return redirect()->to($request->redirectUri);
+        }
+
         return redirect()->to($this->previousUrl());
     }
+
 
     /**
      * Get Searchable Key
