@@ -129,4 +129,66 @@ trait Searchable
             });
         }
     }
+
+    /**
+     * Search terms
+     *
+     * @param       $model
+     * @param array $columns
+     * @param bool  $split
+     * @param bool  $matchAny
+     * @return mixed
+     */
+    protected function filterModelByTerms($model, array $columns, $split = true, $matchAny = true)
+    {
+        $searchTermsSplit = explode(' ', $this->getSearchTerm());
+        if ($split) {
+            $model = $model->where(function ($q) use ($columns, $matchAny, $searchTermsSplit) {
+                if ( ! empty($columns) && ! empty($searchTermsSplit)) {
+                    foreach ($columns as $key => $column) {
+                        if ( ! $key) {
+                            $q->where(function ($query) use ($searchTermsSplit, $column, $matchAny) {
+                                foreach ($searchTermsSplit as $key => $term) {
+                                    if ( ! $key) {
+                                        $query->where($column, 'LIKE', '%' . $term . "%");
+                                    } else {
+                                        if ($matchAny) {
+                                            $query->orWhere($column, 'LIKE', '%' . $term . "%");
+                                        } else {
+                                            $query->where($column, 'LIKE', '%' . $term . "%");
+                                        }
+                                    }
+                                }
+                            });
+                        } else {
+                            $q->orWhere(function ($query) use ($searchTermsSplit, $column, $matchAny) {
+                                foreach ($searchTermsSplit as $key => $term) {
+                                    if ( ! $key) {
+                                        $query->where($column, 'LIKE', '%' . $term . "%");
+                                    } else {
+                                        if ($matchAny) {
+                                            $query->orWhere($column, 'LIKE', '%' . $term . "%");
+                                        } else {
+                                            $query->where($column, 'LIKE', '%' . $term . "%");
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+        } else {
+            $model = $model->where(function ($q) use ($columns) {
+                foreach ($columns as $key => $column) {
+                    if ( ! $key) {
+                        $q->where($column, 'LIKE', '%' . $this->getSearchTerm() . "%");
+                    } else {
+                        $q->orWhere($column, 'LIKE', '%' . $this->getSearchTerm() . "%");
+                    }
+                }
+            });
+        }
+        return $model;
+    }
 }
