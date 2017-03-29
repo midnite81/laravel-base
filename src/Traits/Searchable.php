@@ -11,7 +11,7 @@ trait Searchable
      * @param Request $request
      * @return mixed
      */
-    public function search(Request $request)
+    public function search($request = null)
     {
         session()->put($this->getSearchableKey(), $request->get('query'));
 
@@ -28,7 +28,7 @@ trait Searchable
      * @param Request $request
      * @return mixed
      */
-    public function reset(Request $request)
+    public function reset($request = null)
     {
         session()->forget($this->getSearchableKey());
 
