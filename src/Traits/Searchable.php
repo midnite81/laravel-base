@@ -8,15 +8,14 @@ trait Searchable
     /**
      * Save search term to
      *
-     * @param Request $request
      * @return mixed
      */
-    public function search($request = null)
+    public function search()
     {
-        session()->put($this->getSearchableKey(), $request->get('query'));
+        session()->put($this->getSearchableKey(), request()->get('query'));
 
-        if ($request->redirectUri) {
-            return redirect()->to($request->redirectUri);
+        if (request()->redirectUri) {
+            return redirect()->to(request()->redirectUri);
         }
 
         return redirect()->to($this->previousUrl());
@@ -25,15 +24,14 @@ trait Searchable
     /**
      * Reset Search Term
      *
-     * @param Request $request
      * @return mixed
      */
-    public function reset($request = null)
+    public function reset()
     {
         session()->forget($this->getSearchableKey());
 
-        if ($request->redirectUri) {
-            return redirect()->to($request->redirectUri);
+        if (request()->redirectUri) {
+            return redirect()->to(request()->redirectUri);
         }
 
         return redirect()->to($this->previousUrl());
