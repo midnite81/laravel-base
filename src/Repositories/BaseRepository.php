@@ -27,7 +27,10 @@ abstract class BaseRepository
     }
 
     /**
+     * Check to see if Record Exists
      *
+     * @param $id
+     * @return bool|mixed
      */
     public function recordExists($id)
     {
@@ -35,10 +38,10 @@ abstract class BaseRepository
             return true;
         }
         if (is_numeric($id) or $this->shouldBeNumber($id)) {
-            return $this->findById($id, false);
+            return $this->findById($id, true);
         }
         if (is_string($id)) {
-            return $this->findByIdentifier($id, false);
+            return $this->findByIdentifier($id, true);
         }
     }
 
@@ -66,7 +69,7 @@ abstract class BaseRepository
      * @param $checkExists
      * @return mixed
      */
-    public function findByIdentifier($uuid, $checkExists)
+    public function findByIdentifier($uuid, $checkExists = false)
     {
         if ($checkExists) {
             return $this->model->where('identifier', $uuid)->exists();
