@@ -27,28 +27,58 @@ abstract class BaseRepository
     }
 
     /**
-     * Find record by Id
-     * @param $id
-     * @return
+     *
      */
-    public function findById($id)
+    public function recordExists($id)
     {
-        return $this->model->find($id);
+        if (is_object($id)) {
+            return true;
+        }
+        if (is_numeric($id) or $this->shouldBeNumber($id)) {
+            return $this->findById($id, false);
+        }
+        if (is_string($id)) {
+            return $this->findByIdentifier($id, false);
+        }
+    }
+
+    /**
+     * Find record by Id
+     *
+     * @param      $id
+     * @param bool $existCheck
+     * @return mixed
+     */
+    public function findById($id, $existCheck = false)
+    {
+        $record = $this->model->find($id);
+
+        if ($existCheck) {
+            return ! empty($record);
+        }
+        return $record;
     }
 
     /**
      * Find by identifier
      *
      * @param $uuid
+     * @param $checkExists
      * @return mixed
      */
-    public function findByIdentifier($uuid)
+    public function findByIdentifier($uuid, $checkExists)
     {
+        if ($checkExists) {
+            return $this->model->where('identifier', $uuid)->exists();
+        }
         return $this->model->where('identifier', $uuid)->first();
     }
 
     /**
      * Find by an array of credentials (return first)
+     *
+     * @param $array
+     * @return
      */
     public function findByCredentialsFirst($array)
     {
@@ -58,6 +88,9 @@ abstract class BaseRepository
 
     /**
      * Find by an array of credentials (return all)
+     *
+     * @param $array
+     * @return
      */
     public function findByCredentialsAll($array)
     {
