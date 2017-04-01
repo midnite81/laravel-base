@@ -1,6 +1,6 @@
 <?php
 
-namespace Midnite81\Commands;
+namespace Midnite81\LaravelBase\Commands;
 
 use Illuminate\Console\Command;
 
