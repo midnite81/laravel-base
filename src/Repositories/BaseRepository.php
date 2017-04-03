@@ -27,7 +27,7 @@ abstract class BaseRepository
     }
 
     /**
-     * Check to see if Record Exists
+     * Check to see if record exists
      *
      * @param $id
      * @return bool|mixed
