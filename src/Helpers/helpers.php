@@ -1,7 +1,5 @@
 <?php
 
-namespace Midnite81\Helpers;
-
 if (!function_exists('concatenate')) {
     /**
      * Concatenate strings together
