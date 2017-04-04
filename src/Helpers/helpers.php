@@ -44,11 +44,16 @@ if (! function_exists('concatenate_with_separator')) {
     }
 }
 
-if (! function_exists('getDbProperty')) {
-    function getDbProperty($term, $table, $column = 'name') {
+if (! function_exists('getDbPropertyId')) {
+    function getDbPropertyId($term, $table, $column = 'name') {
 
-        return \Illuminate\Support\Facades\DB::table($table)
+        $result = \Illuminate\Support\Facades\DB::table($table)
             ->where($column, $term)
             ->first();
+
+        if ($result) {
+            return $result->id;
+        }
+        return null;
     }
 }
