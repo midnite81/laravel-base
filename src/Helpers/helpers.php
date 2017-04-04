@@ -7,7 +7,7 @@ namespace Midnite81\Helpers;
  *
  * @return string
  */
-function concatinate()
+function concatenate()
 {
     $args = func_get_args();
     if (! empty($args)) {
@@ -25,7 +25,7 @@ function concatinate()
  *
  * @return string
  */
-function concatinate_with_separator()
+function concatenate_with_separator()
 {
         $args = func_get_args();
         $separator = (isset($args[0])) ? $args[0] : ' ';
