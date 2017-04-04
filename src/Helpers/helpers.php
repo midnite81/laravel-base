@@ -43,3 +43,12 @@ if (! function_exists('concatenate_with_separator')) {
         return implode($separator, $args);
     }
 }
+
+if (! function_exists('getDbProperty')) {
+    function getDbProperty($term, $table, $column = 'name') {
+
+        return \Illuminate\Support\Facades\DB::table($table)
+            ->where($column, $term)
+            ->first();
+    }
+}
