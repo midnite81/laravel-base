@@ -37,6 +37,6 @@ class GetEnvVariable extends Command
      */
     public function handle()
     {
-        return env($this->argument('key'));
+        $this->info(env($this->argument('key')));
     }
 }
