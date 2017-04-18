@@ -17,6 +17,13 @@ class ChangeEnvVariable extends Command
                             { --blank }';
 
     /**
+     * The path to the env file
+     *
+     * @var string
+     */
+    protected $envPath;
+
+    /**
      * The console command description.
      *
      * @var string
@@ -30,6 +37,8 @@ class ChangeEnvVariable extends Command
     public function __construct()
     {
         parent::__construct();
+
+        $this->envPath = app()->environmentFilePath();
     }
 
     /**
@@ -79,9 +88,7 @@ class ChangeEnvVariable extends Command
      */
     protected function loadEnvFile()
     {
-        $file = base_path('.env');
-
-        return file_get_contents($file);
+        return file_get_contents($this->envPath);
     }
 
     /**
@@ -130,7 +137,7 @@ class ChangeEnvVariable extends Command
      */
     protected function saveEnvFile($envFile)
     {
-        return file_put_contents(base_path('.env'), $envFile);
+        return file_put_contents($this->envPath, $envFile);
     }
 
     /**
