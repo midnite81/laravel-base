@@ -71,8 +71,7 @@ if (! function_exists('ddd')) {
     function ddd() {
         $from = debug_backtrace()[0];
         $args = func_get_args();
-        array_push($args, $from['file']);
-        array_push($args, $from['line']);
+        array_push($args, $from['file'] . ":" . $from['line']);
 
         call_user_func_array('dd', $args);
     }
