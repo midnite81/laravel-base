@@ -43,6 +43,14 @@ if (! function_exists('concatenate_with_separator')) {
 }
 
 if (! function_exists('getDbPropertyId')) {
+    /**
+     * Gets the ID from a table and column based on a term
+     *
+     * @param        $term
+     * @param        $table
+     * @param string $column
+     * @return null
+     */
     function getDbPropertyId($term, $table, $column = 'name') {
 
         $result = \Illuminate\Support\Facades\DB::table($table)
@@ -53,5 +61,19 @@ if (! function_exists('getDbPropertyId')) {
             return $result->id;
         }
         return null;
+    }
+}
+
+if (! function_exists('ddd')) {
+    /**
+     * Adds file and line to the traditional die and dump function
+     */
+    function ddd() {
+        $from = debug_backtrace()[0];
+        $args = func_get_args();
+        array_push($args, $from['file']);
+        array_push($args, $from['line']);
+
+        call_user_func_array('dd', $args);
     }
 }
