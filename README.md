@@ -3,7 +3,7 @@ Some base functionality for Laravel
 
 Work in progress - proper documentation to follow.
 
-#Installation
+# Installation
 
 This package requires PHP 5.6+, and includes a Laravel 5 Service Provider and Facade.
 
