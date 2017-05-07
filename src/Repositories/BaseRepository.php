@@ -3,8 +3,40 @@ namespace Midnite81\LaravelBase\Repositories;
 
 abstract class BaseRepository
 {
+    /**
+     * An array of relationships to eager load.
+     *
+     * @var array
+     */
+    protected $withs = [];
 
-    protected $uuid = false;
+    /**
+     * An array of where has queries
+     *
+     * @var array
+     */
+    protected $whereHas = [];
+
+    /**
+     * A nested array of relationships that must exist on a record.
+     *
+     * @var array
+     */
+    protected $has = [];
+
+    /**
+     * The column to order the selects by.
+     *
+     * @var string
+     */
+    protected $orderBy;
+
+    /**
+     * The direction to order selects in.
+     *
+     * @var string
+     */
+    protected $orderByDirection = 'ASC';
 
     /**
      * Find record
@@ -17,13 +49,14 @@ abstract class BaseRepository
         if (is_object($id)) {
             return $id;
         }
+
         if (is_numeric($id) or $this->shouldBeNumber($id)) {
             return $this->findById($id);
         }
+
         if (is_string($id)) {
             return $this->findByIdentifier($id);
         }
-
     }
 
     /**
@@ -54,11 +87,12 @@ abstract class BaseRepository
      */
     public function findById($id, $existCheck = false)
     {
-        $record = $this->model->find($id);
+        $record = $this->prepareQuery($this->model)->find($id);
 
         if ($existCheck) {
             return ! empty($record);
         }
+
         return $record;
     }
 
@@ -71,21 +105,24 @@ abstract class BaseRepository
      */
     public function findByIdentifier($uuid, $checkExists = false)
     {
+        $record = $this->prepareQuery($this->model->where('identifier', $uuid))->first();
+
         if ($checkExists) {
-            return $this->model->where('identifier', $uuid)->exists();
+            return ! empty($record);
         }
-        return $this->model->where('identifier', $uuid)->first();
+
+        return $record;
     }
 
     /**
      * Find by an array of credentials (return first)
      *
      * @param $array
-     * @return
+     * @return mixed
      */
     public function findByCredentialsFirst($array)
     {
-        return $this->model->where($array)->first();
+        return $this->prepareQuery($this->model->where($array))->first();
     }
 
 
@@ -93,15 +130,16 @@ abstract class BaseRepository
      * Find by an array of credentials (return all)
      *
      * @param $array
-     * @return
+     * @return mixed
      */
     public function findByCredentialsAll($array)
     {
-        return $this->model->where($array)->get();
+        return $this->prepareQuery($this->model->where($array))->get();
     }
 
     /**
      * Create a record
+     *
      * @param $data
      * @return static
      */
@@ -113,6 +151,7 @@ abstract class BaseRepository
 
     /**
      * Update a record
+     *
      * @param $id
      * @param $data
      * @return mixed
@@ -154,30 +193,136 @@ abstract class BaseRepository
     public function all($order = null)
     {
 
-        if (! empty($order) and is_string($order)) {
-            return $this->model->orderBy($order)->get();
+        if ( ! empty($order) and is_string($order)) {
+            return $this->prepareQuery($this->model)->orderBy($order)->get();
         }
-        if (! empty($order) and is_array($order)) {
-            $build = $this->model;
-            foreach($order as $orderItem) {
+
+        if ( ! empty($order) and is_array($order)) {
+            $build = $this->prepareQuery($this->model);
+
+            foreach ($order as $orderItem) {
                 $build = $build->orderBy($orderItem);
             }
-            return $build->get();
+
+            return $build->with($this->withs)->get();
         }
 
-        return $this->model->all();
-
+        return $this->prepareQuery($this->model)->get();
     }
 
+    /**
+     * Returns a key pair value list from the model
+     *
+     * @param $idColumn
+     * @param $valueColumn
+     * @return mixed
+     */
     public function lists($idColumn, $valueColumn)
     {
         return $this->model->all()->pluck($valueColumn, $idColumn);
     }
 
-    public function usingUuid() {
-        $this->uuid = true;
+    /**
+     * Adds withs to eager load
+     *
+     * @param $withs
+     * @return $this
+     */
+    public function with($withs)
+    {
+        if ( ! is_array($withs)) {
+            $withs = func_get_args();
+        }
+
+        $this->withs = $withs;
+
+        return $this;
     }
 
+
+    /**
+     * Adds in array of relationships that must exist on a record
+     *
+     * @param        $relation
+     * @param string $operator
+     * @param int    $value
+     * @return $this
+     */
+    public function has($relation, $operator = '>=', $value = 1)
+    {
+        $this->has[] = compact('relation', 'operator', 'value');
+
+        return $this;
+    }
+
+    /**
+     * Adds an array of whereHas queries
+     *
+     * @param $relation
+     * @return $this
+     */
+    public function whereHas($relation)
+    {
+        if ( ! is_array($relation)) {
+            $relation = func_get_args();
+        }
+
+        $this->whereHas[] = $relation;
+
+        return $this;
+    }
+
+
+    /**
+     * Orders the query
+     *
+     * @param        $column
+     * @param string $direction
+     * @return $this
+     */
+    public function orderBy($column, $direction = 'ASC')
+    {
+        $this->orderBy = $column;
+        $this->orderByDirection = $direction;
+
+        return $this;
+    }
+
+    /**
+     * Prepare the query for execution
+     *
+     * @param $query
+     * @return mixed
+     */
+    protected function prepareQuery($query)
+    {
+        $query = $query->with($this->withs);
+
+        if ($this->orderBy) {
+            $query = $query->orderBy($this->orderBy, $this->orderByDirection);
+        }
+
+        if ( ! empty($this->has)) {
+            foreach ($this->has as $has) {
+                $query = $query->has($has['relation'], $has['operator'], $has['value']);
+            }
+        }
+
+        if ( ! empty($this->whereHas)) {
+            foreach ($this->whereHas as $has) {
+                $query = $query->whereHas($has[0], isset($has[1]) ? $has[1] : null);
+            }
+        }
+
+        return $query;
+    }
+
+    /**
+     * Determines if the ID should be a number.
+     *
+     * @param $id
+     * @return bool
+     */
     protected function shouldBeNumber($id)
     {
         $pattern = "/^[0-9]+?$/";
@@ -188,6 +333,4 @@ abstract class BaseRepository
 
         return false;
     }
-
-
 }
