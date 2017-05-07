@@ -17,3 +17,8 @@ Run `composer install` or `composer update` to download the dependencies or you 
 
 At this point some users may need to run the command `composer dump-autoload`. Alternatively, you can run `php artisan optimize`
 which should include the dump-autoload command.
+
+Documentation 
+
+[Searchable Trait](https://github.com/midnite81/laravel-base/blob/master/docs/searchable.md)
+[Helpers](https://github.com/midnite81/laravel-base/blob/master/docs/helpers.md)
