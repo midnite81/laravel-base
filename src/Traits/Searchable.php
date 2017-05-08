@@ -56,7 +56,7 @@ trait Searchable
      */
     protected function getSearchTerm()
     {
-        return session()->get($this->getSearchableKey());
+        return trim(session()->get($this->getSearchableKey()));
     }
 
 
