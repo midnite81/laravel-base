@@ -42,7 +42,7 @@ if (! function_exists('concatenate_with_separator')) {
     }
 }
 
-if (! function_exists('getDbPropertyId')) {
+if (! function_exists('get_db_property_id')) {
     /**
      * Gets the ID from a table and column based on a term
      *
@@ -51,7 +51,7 @@ if (! function_exists('getDbPropertyId')) {
      * @param string $column
      * @return null
      */
-    function getDbPropertyId($term, $table, $column = 'name') {
+    function get_db_property_id($term, $table, $column = 'name') {
 
         $result = \Illuminate\Support\Facades\DB::table($table)
             ->where($column, $term)
