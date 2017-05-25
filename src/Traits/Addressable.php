@@ -1,7 +1,5 @@
 <?php
-
 namespace Midnite81\LaravelBase\Traits;
-
 
 use Midnite81\LaravelBase\Exceptions\RelationshipNotDefinedException;
 
@@ -17,28 +15,33 @@ trait Addressable
 
         $output = [];
 
-        if ($this instanceof Illuminate\Database\Eloquent\Model) {
+        if ($this instanceof \Illuminate\Database\Eloquent\Model) {
             foreach($fields as $field) {
                 if (is_array($field)) {
-                    $this->getRelationalField($field);
+                    $fieldValue = $this->getRelationalField($field);
+                    if (! empty($fieldValue)) {
+                        $output[] = $fieldValue;
+                    }
                 } else {
-                    $output[] = $this->{$field};
+                    $fieldValue = $this->{$field};
+                    if (! empty($fieldValue)) {
+                        $output[] = $fieldValue;
+                    }
                 }
-
             }
         }
 
         return implode('<br>', $output);
     }
 
-    public function getRelationalField($field)
+    public function getRelationalField($relationalArray)
     {
-        if (! method_exists($this, $field[0])) {
+        list($relation, $field) = $relationalArray;
+        if (! method_exists($this, $relation)) {
             throw new RelationshipNotDefinedException();
         }
 
-        return $this->{$field[0]}->{$field[1]};
-
+        return $this[$relation][$field];
     }
 
     /**
@@ -49,12 +52,11 @@ trait Addressable
     public function addressBlockFields()
     {
         return [
-            'street_1',
-            'street_2',
+            'address_line_1',
+            'address_line_2',
             'city',
             'county',
             'postcode',
-            'country_id',
         ];
     }
 }
