@@ -77,3 +77,18 @@ if (! function_exists('ddd')) {
         call_user_func_array('dd', $args);
     }
 }
+
+if (! function_exists('remove_spaces')) {
+    /**
+     * Removes any spaces from the given string
+     *
+     * @param $string
+     * @return mixed|string
+     */
+    function remove_spaces($string) {
+        $string = preg_replace('/\s+/', '', trim($string));
+
+        return $string;
+    }
+}
+
