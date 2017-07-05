@@ -14,7 +14,8 @@ class ChangeEnvVariable extends Command
     protected $signature = 'env:set 
                             {key} 
                             {value?}
-                            { --blank }';
+                            { --blank }
+                            { --silent}';
 
     /**
      * The path to the env file
@@ -173,7 +174,7 @@ class ChangeEnvVariable extends Command
      */
     protected function proceedWhenInProduction()
     {
-        if (env('APP_ENV', 'production') == 'production') {
+        if (env('APP_ENV', 'production') == 'production' && ! $this->option('silent')) {
             $this->warn('Application is in production!');
             $proceed = $this->ask('Are you sure you want to continue? (y/n)', 'n');
             if (! empty($proceed) && $proceed == 'y' || $proceed == 'yes') {
