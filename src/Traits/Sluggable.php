@@ -17,6 +17,10 @@ trait Sluggable
             $model->slug = $model->buildSlug();
         });
 
+        static::saving(function($model) {
+            $model->slug = $model->buildSlug();
+        });
+
     }
 
     /**
