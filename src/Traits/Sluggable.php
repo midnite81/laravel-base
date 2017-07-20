@@ -9,18 +9,37 @@ trait Sluggable
     public static function bootSluggable()
     {
         static::created(function($model) {
-            $model->slug = $model->buildSlug();
-            $model->save();
+            if ($model->shouldRunEvent($model, 'created')) {
+                $model->slug = $model->buildSlug();
+                $model->save();
+            }
         });
 
         static::updating(function($model) {
-            $model->slug = $model->buildSlug();
+            if ($model->shouldRunEvent($model, 'updating')) {
+                $model->slug = $model->buildSlug();
+            }
         });
 
         static::saving(function($model) {
-            $model->slug = $model->buildSlug();
+            if ($model->shouldRunEvent($model, 'saving')) {
+                $model->slug = $model->buildSlug();
+            }
         });
 
+    }
+
+    /**
+     * Checks to see if the event should run
+     *
+     * @param $model
+     * @param $type
+     * @return bool
+     */
+    function shouldRunEvent($model, $type)
+    {
+        return property_exists($model, 'sluggableEvents') && in_array($type, $model->sluggableEvents)
+            || ! property_exists($model, 'sluggableEvents');
     }
 
     /**
