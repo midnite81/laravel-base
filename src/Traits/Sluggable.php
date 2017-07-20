@@ -10,20 +10,20 @@ trait Sluggable
     {
         static::created(function($model) {
             if ($model->shouldRunEvent($model, 'created')) {
-                $model->slug = $model->buildSlug();
+                $model->{$model->getSlugColumn()} = $model->buildSlug();
                 $model->save();
             }
         });
 
         static::updating(function($model) {
             if ($model->shouldRunEvent($model, 'updating')) {
-                $model->slug = $model->buildSlug();
+                $model->{$model->getSlugColumn()} = $model->buildSlug();
             }
         });
 
         static::saving(function($model) {
             if ($model->shouldRunEvent($model, 'saving')) {
-                $model->slug = $model->buildSlug();
+                $model->{$model->getSlugColumn()} = $model->buildSlug();
             }
         });
 
@@ -43,7 +43,15 @@ trait Sluggable
     }
 
     /**
-     * Return the Sluggable Column
+     * This is the column the slug is stored to
+     */
+    public function getSlugColumn()
+    {
+        return 'slug';
+    }
+
+    /**
+     * Return the column the slug should be based on
      *
      * @return string
      */
@@ -52,10 +60,14 @@ trait Sluggable
         return 'name';
     }
 
+    /**
+     * Build the slug
+     *
+     * @return string
+     */
     protected function buildSlug()
     {
         $name = $this->getAttribute($this->getSluggableColumn());
         return str_slug($name . '-' . $this->getAttribute('id'));
-
     }
 }
