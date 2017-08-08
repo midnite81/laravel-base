@@ -1,11 +1,10 @@
 <?php
 
 namespace Midnite81\Services;
-use Midnite81\Contracts\Services\UuidGenerator as UuidGeneratorContract;
-use Ramsey\Uuid\Uuid;
 
+use Midnite81\Contracts\Services\UuidGenerator as Contract;
 
-class UuidGenerator implements UuidGeneratorContract
+class UuidGenerator implements Contract
 {
     /**
      * Generate a new UUID.

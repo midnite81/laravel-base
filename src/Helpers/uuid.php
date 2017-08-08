@@ -8,6 +8,6 @@ if ( ! function_exists('uuid')) {
     */
     function uuid()
     {
-        return app('App\Contracts\Services\UuidGenerator')->generate();
+        return app('Midnite81\Contracts\Services\UuidGenerator')->generate();
     }
 }
