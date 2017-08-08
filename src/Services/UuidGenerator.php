@@ -1,6 +1,6 @@
 <?php
 
-namespace Midnite81\Services;
+namespace Midnite81\LaravelBase\Services;
 
 use Midnite81\Contracts\Services\UuidGenerator as Contract;
 

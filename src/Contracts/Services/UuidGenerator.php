@@ -1,5 +1,5 @@
 <?php
-namespace Midnite81\Contracts\Services;
+namespace Midnite81\LaravelBase\Contracts\Services;
 
 interface UuidGenerator
 {
