@@ -175,6 +175,18 @@ abstract class BaseRepository
     }
 
     /**
+     * Update or Create record
+     *
+     * @param $updateArray
+     * @param $data
+     * @return mixed
+     */
+    public function updateOrCreate($updateArray, $data)
+    {
+        return $this->model->updateOrCreate($updateArray, $data);
+    }
+
+    /**
      * Delete a record
      *
      * @param $id
