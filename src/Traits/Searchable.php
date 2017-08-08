@@ -12,6 +12,10 @@ trait Searchable
      */
     public function search()
     {
+        if (request()->get('query') == "") {
+            return $this->reset();
+        }
+        
         session()->put($this->getSearchableKey(), request()->get('query'));
 
         if (request()->redirectUri) {
