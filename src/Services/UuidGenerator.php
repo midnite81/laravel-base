@@ -2,7 +2,8 @@
 
 namespace Midnite81\LaravelBase\Services;
 
-use Midnite81\Contracts\Services\UuidGenerator as Contract;
+use Midnite81\LaravelBase\Contracts\Services\UuidGenerator as Contract;
+use Ramsey\Uuid\Uuid;
 
 class UuidGenerator implements Contract
 {
