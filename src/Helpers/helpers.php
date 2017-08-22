@@ -92,3 +92,9 @@ if (! function_exists('remove_spaces')) {
     }
 }
 
+if (! function_exists('remove_query_string')) {
+    function remove_query_string($url) {
+        return preg_replace('/\?.*/', '', $url);
+    }
+}
+
