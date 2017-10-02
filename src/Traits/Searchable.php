@@ -77,7 +77,7 @@ trait Searchable
      */
     protected function previousUrl()
     {
-        return preg_replace('/\?(.?)$/', '', url()->previous());
+        return preg_replace('/\?(.*?)$/', '', url()->previous());
     }
 
     /**
