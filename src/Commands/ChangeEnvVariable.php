@@ -39,7 +39,18 @@ class ChangeEnvVariable extends Command
     {
         parent::__construct();
 
-        $this->envPath = app()->environmentFilePath();
+        $envFile = base_path('.env');
+
+        if (method_exists(app(), 'environmentFilePath')) {
+            $envFile = app()->environmentFilePath();
+        }
+
+        if (method_exists(app(), 'environmentFile')
+            && method_exists(app(), 'environmentPath')) {
+            $envFile = app()->environmentPath() . DIRECTORY_SEPARATOR . app()->environmentFile();
+        }
+
+        $this->envPath = $envFile;
     }
 
     /**
