@@ -12,6 +12,10 @@ trait Searchable
      */
     public function search()
     {
+        if (request()->get('query') == "") {
+            return $this->reset();
+        }
+        
         session()->put($this->getSearchableKey(), request()->get('query'));
 
         if (request()->redirectUri) {
@@ -73,7 +77,7 @@ trait Searchable
      */
     protected function previousUrl()
     {
-        return preg_replace('/\?(.?)$/', '', url()->previous());
+        return preg_replace('/\?(.*?)$/', '', url()->previous());
     }
 
     /**

@@ -11,6 +11,13 @@ abstract class BaseRepository
     protected $withs = [];
 
     /**
+     * An array of relationships to count.
+     *
+     * @var array
+     */
+    protected $withCounts = [];
+    
+    /**
      * An array of where has queries
      *
      * @var array
@@ -168,6 +175,18 @@ abstract class BaseRepository
     }
 
     /**
+     * Update or Create record
+     *
+     * @param $updateArray
+     * @param $data
+     * @return mixed
+     */
+    public function updateOrCreate($updateArray, $data)
+    {
+        return $this->model->updateOrCreate($updateArray, $data);
+    }
+
+    /**
      * Delete a record
      *
      * @param $id
@@ -238,7 +257,23 @@ abstract class BaseRepository
 
         return $this;
     }
+    
+    /**
+     * Adds relations to count
+     *
+     * @param $withs
+     * @return $this
+     */
+    public function withCount($withs)
+    {
+        if ( ! is_array($withs)) {
+            $withs = func_get_args();
+        }
 
+        $this->withCounts = $withs;
+
+        return $this;
+    }
 
     /**
      * Adds in array of relationships that must exist on a record
@@ -298,6 +333,10 @@ abstract class BaseRepository
     {
         $query = $query->with($this->withs);
 
+        if ($this->withCounts) {
+            $query = $query->withCount($this->withCounts);
+        }
+        
         if ($this->orderBy) {
             $query = $query->orderBy($this->orderBy, $this->orderByDirection);
         }

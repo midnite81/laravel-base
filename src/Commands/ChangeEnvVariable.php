@@ -14,7 +14,8 @@ class ChangeEnvVariable extends Command
     protected $signature = 'env:set 
                             {key} 
                             {value?}
-                            { --blank }';
+                            { --blank }
+                            { --silent}';
 
     /**
      * The path to the env file
@@ -38,7 +39,18 @@ class ChangeEnvVariable extends Command
     {
         parent::__construct();
 
-        $this->envPath = app()->environmentFilePath();
+        $envFile = base_path('.env');
+
+        if (method_exists(app(), 'environmentFilePath')) {
+            $envFile = app()->environmentFilePath();
+        }
+
+        if (method_exists(app(), 'environmentFile')
+            && method_exists(app(), 'environmentPath')) {
+            $envFile = app()->environmentPath() . DIRECTORY_SEPARATOR . app()->environmentFile();
+        }
+
+        $this->envPath = $envFile;
     }
 
     /**
@@ -173,7 +185,7 @@ class ChangeEnvVariable extends Command
      */
     protected function proceedWhenInProduction()
     {
-        if (env('APP_ENV', 'production') == 'production') {
+        if (env('APP_ENV', 'production') == 'production' && ! $this->option('silent')) {
             $this->warn('Application is in production!');
             $proceed = $this->ask('Are you sure you want to continue? (y/n)', 'n');
             if (! empty($proceed) && $proceed == 'y' || $proceed == 'yes') {

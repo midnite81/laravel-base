@@ -52,3 +52,13 @@ of where the die and dump is and also the debugging stack.
 _Example Usage_
 
 ddd($someVariable);
+
+## remove_spaces
+
+This removes all spaces from a given string
+
+_Example Usage_
+
+remove_spaces('Remove The Spaces');
+
+Results: **RemoveTheSpaces**
