@@ -3,6 +3,7 @@
 namespace Midnite81\LaravelBase;
 
 use Illuminate\Support\ServiceProvider;
+use Midnite81\LaravelBase\Commands\BackupDatabase;
 use Midnite81\LaravelBase\Commands\ChangeEnvVariable;
 use Midnite81\LaravelBase\Commands\GetEnvVariable;
 
@@ -17,7 +18,8 @@ class BaseServiceProvider extends ServiceProvider
     {
         $this->commands([
             GetEnvVariable::class,
-            ChangeEnvVariable::class
+            ChangeEnvVariable::class,
+            BackupDatabase::class,
         ]);
     }
 
