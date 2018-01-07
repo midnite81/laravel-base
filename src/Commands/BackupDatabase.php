@@ -20,7 +20,7 @@ class BackupDatabase extends Command
      *
      * @var string
      */
-    protected $description = 'Backs up the default database';
+    protected $description = 'Backs up the database';
 
     /**
      * Create a new command instance.
