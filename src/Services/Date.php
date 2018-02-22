@@ -4,8 +4,8 @@ namespace Midnite81\LaravelBase\Services;
 
 class Date
 {
-    public $dmy = "d/m/Y";
-    public $ymd = "Y/m/d";
-    public $mdy = "m/d/Y";
-    public $db = "Y-m-d";
+    const DMY = "d/m/Y";
+    const YMD = "Y/m/d";
+    const MDY = "m/d/Y";
+    const DB = "Y-m-d";
 }
