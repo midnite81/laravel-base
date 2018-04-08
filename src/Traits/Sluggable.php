@@ -30,19 +30,6 @@ trait Sluggable
     }
 
     /**
-     * Checks to see if the event should run
-     *
-     * @param $model
-     * @param $type
-     * @return bool
-     */
-    function shouldRunEvent($model, $type)
-    {
-        return property_exists($model, 'sluggableEvents') && in_array($type, $model->sluggableEvents)
-            || ! property_exists($model, 'sluggableEvents');
-    }
-
-    /**
      * This is the column the slug is stored to
      */
     public function getSlugColumn()
@@ -58,6 +45,35 @@ trait Sluggable
     public function getSluggableColumn()
     {
         return 'name';
+    }
+
+    /**
+     * Update all slugs
+     */
+    public function updateSlugs()
+    {
+        $allRecords = $this->all();
+
+        if ($allRecords) {
+            foreach($allRecords as $record) {
+                ($this->find($record->id))->update([
+                    $this->getSlugColumn() => $this->buildSlug()
+                ]);
+            }
+        }
+    }
+
+    /**
+     * Checks to see if the event should run
+     *
+     * @param $model
+     * @param $type
+     * @return bool
+     */
+    protected function shouldRunEvent($model, $type)
+    {
+        return property_exists($model, 'sluggableEvents') && in_array($type, $model->sluggableEvents)
+            || ! property_exists($model, 'sluggableEvents');
     }
 
     /**
