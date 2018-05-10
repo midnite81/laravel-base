@@ -8,9 +8,11 @@ trait Instantiate
      * Return an instance of the model
      *
      * @return static
+     * @throws \ReflectionException
      */
     public static function instance()
     {
-        return new static;
+        $instance = new \ReflectionClass(static::class);
+        return $instance->newInstanceArgs(func_get_args());
     }
 }
