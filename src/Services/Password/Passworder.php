@@ -3,6 +3,7 @@
 namespace Midnite81\LaravelBase\Services\Password;
 
 use Midnite81\LaravelBase\Services\Password\Drivers\BaseDriver;
+use Midnite81\LaravelBase\Services\Password\Drivers\RandomString;
 use Midnite81\LaravelBase\Services\Password\Drivers\WordBased;
 
 class Passworder
@@ -49,7 +50,7 @@ class Passworder
     public static function createRandomPassword()
     {
         /** @var $passworder */
-        $passworder = new static(new WordBased($useSpecial));
+        $passworder = new static(new RandomString());
 
         return $passworder->generate();
     }
