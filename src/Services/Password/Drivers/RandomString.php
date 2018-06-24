@@ -3,8 +3,6 @@ namespace Midnite81\LaravelBase\Services\Password\Drivers;
 
 use Midnite81\LaravelBase\Services\Password\Password;
 
-include_once(__DIR__ . '/../../../../vendor/autoload.php');
-
 class RandomString extends BaseDriver
 {
     protected $charSet = [
