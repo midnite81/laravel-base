@@ -59,7 +59,7 @@ class Nato
         "?" => "(Question Mark)",
         "~" => "(Tilda)",
         "`" => "(BackTick)",
-        "!" => "(Explanation Mar)",
+        "!" => "(Explanation Mark)",
         "@" => "(At Sign)",
         "£" => "(Pound Sign)",
         "$" => "(Dollar Sign)",
