@@ -8,6 +8,11 @@ class Password
 {
     protected $password;
 
+    /**
+     * Password constructor.
+     *
+     * @param $password
+     */
     public function __construct($password)
     {
         $this->password = $password;
@@ -43,11 +48,21 @@ class Password
         return base64_encode($this->password);
     }
 
+    /**
+     * Return a nato converted string
+     *
+     * @return mixed
+     */
     public function toNato()
     {
-        return new Nato($this->password);
+        return Nato::convert($this->password);
     }
 
+    /**
+     * Magic to string method
+     *
+     * @return mixed
+     */
     public function __toString()
     {
         return $this->password;
