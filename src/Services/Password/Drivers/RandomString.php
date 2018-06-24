@@ -9,7 +9,7 @@ class RandomString extends BaseDriver
         'lower' => 'abcdefghijklmnopqrstuvwxyz',
         'upper' => 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
         'number' => '1234567890',
-        'special' => '!@£$%^&*()',
+        'special' => '!@$%^&*()',
     ];
 
     protected $upper;
