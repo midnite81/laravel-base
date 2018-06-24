@@ -135,7 +135,7 @@ class RandomString extends BaseDriver
      */
     protected function getCharacterFromArray()
     {
-        $character = $this->characters[count($this->characters) - 1];
+        $character = $this->characters[rand(0, count($this->characters) - 1)];
 
         if ($this->unique) {
             $position = array_search($character, $this->characters);
