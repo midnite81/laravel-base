@@ -22,12 +22,14 @@ class Passworder
         $this->driver = $driver;
     }
 
+    /**
+     * Return the generated password
+     *
+     * @return mixed
+     */
     public function generate()
     {
-        return [
-            'pass' => $this->driver->get(),
-            'bcrypt' => bcrypt($this->driver->get())
-        ];
+        return $this->driver->get();
     }
 
     /**
@@ -36,19 +38,19 @@ class Passworder
      * @param bool $useSpecial
      * @return mixed
      */
-    public function createWordBasedPassword($useSpecial = false)
+    public static function createWordBasedPassword($useSpecial = false)
     {
         /** @var $passworder */
         $passworder = new static(new WordBased($useSpecial));
 
-        $passworder->generate();
+        return $passworder->generate();
     }
 
-    public function createRandomPassword()
+    public static function createRandomPassword()
     {
         /** @var $passworder */
         $passworder = new static(new WordBased($useSpecial));
 
-        $passworder->generate();
+        return $passworder->generate();
     }
 }
