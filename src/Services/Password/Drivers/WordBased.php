@@ -36,8 +36,8 @@ class WordBased extends BaseDriver
     {
         $objects = array_merge(Dictionary::animals(), Dictionary::objects());
         $colours = array_merge(Dictionary::colours());
-        $this->object = $objects[rand(0, count($objects)) - 1];
-        $this->colour = $colours[rand(0, count($colours)) - 1];
+        $this->object = $objects[rand(0, count($objects) - 1)];
+        $this->colour = $colours[rand(0, count($colours) - 1)];
         $this->number = $number = str_pad(rand(0, 99), 2, "0", STR_PAD_LEFT);
         $this->useSpecial = $useSpecial;
     }
