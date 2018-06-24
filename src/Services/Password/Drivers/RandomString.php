@@ -117,7 +117,7 @@ class RandomString extends BaseDriver
      */
     protected function getCharacter($type)
     {
-        $character = $this->charSet[$type][rand(0, strlen($this->charSet[$type] - 1))];
+        $character = $this->charSet[$type][rand(0, strlen($this->charSet[$type]) - 1)];
 
         if ($this->unique) {
             $position = array_search($character, $this->characters);

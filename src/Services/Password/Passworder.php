@@ -34,7 +34,7 @@ class Passworder
     }
 
     /**
-     * Factory Create Method
+     * Factory Create Word Based Password
      *
      * @param bool $useSpecial
      * @return mixed
@@ -47,6 +47,11 @@ class Passworder
         return $passworder->generate();
     }
 
+    /**
+     * Factory Create Random String Password
+     *
+     * @return mixed
+     */
     public static function createRandomPassword()
     {
         /** @var $passworder */
