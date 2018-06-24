@@ -120,9 +120,7 @@ class RandomString extends BaseDriver
         $character = $this->charSet[$type][rand(0, strlen($this->charSet[$type]) - 1)];
 
         if ($this->unique) {
-            $position = array_search($character, $this->characters);
-            unset($this->characters[$position]);
-            $this->characters = array_values($this->characters);
+            $this->removeFromArray($character);
         }
 
         return $character;
@@ -138,11 +136,19 @@ class RandomString extends BaseDriver
         $character = $this->characters[rand(0, count($this->characters) - 1)];
 
         if ($this->unique) {
-            $position = array_search($character, $this->characters);
-            unset($this->characters[$position]);
-            $this->characters = array_values($this->characters);
+            $this->removeFromArray($character);
         }
 
         return $character;
+    }
+
+    /**
+     * @param $character
+     */
+    protected function removeFromArray($character)
+    {
+        $position = array_search($character, $this->characters);
+        unset($this->characters[$position]);
+        $this->characters = array_values($this->characters);
     }
 }
