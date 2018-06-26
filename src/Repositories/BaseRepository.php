@@ -1,6 +1,8 @@
 <?php
 namespace Midnite81\LaravelBase\Repositories;
 
+use Illuminate\Database\Query\Builder;
+
 abstract class BaseRepository
 {
     /**
@@ -16,7 +18,7 @@ abstract class BaseRepository
      * @var array
      */
     protected $withCounts = [];
-    
+
     /**
      * An array of where has queries
      *
@@ -30,6 +32,11 @@ abstract class BaseRepository
      * @var array
      */
     protected $has = [];
+
+    /**
+     * A set of scopes to add to the query
+     */
+    protected $scopes = [];
 
     /**
      * The column to order the selects by.
@@ -127,9 +134,9 @@ abstract class BaseRepository
      * @param $array
      * @return mixed
      */
-    public function findByCredentialsFirst($array)
+    public function findByCredentialsFirst($array = [])
     {
-        return $this->prepareQuery($this->model->where($array))->first();
+        return $this->prepareQuery($this->createBuilder($array))->first();
     }
 
 
@@ -139,9 +146,9 @@ abstract class BaseRepository
      * @param $array
      * @return mixed
      */
-    public function findByCredentialsAll($array)
+    public function findByCredentialsAll($array = [])
     {
-        return $this->prepareQuery($this->model->where($array))->get();
+        return $this->prepareQuery($this->createBuilder($array))->get();
     }
 
     /**
@@ -211,13 +218,14 @@ abstract class BaseRepository
      */
     public function all($order = null)
     {
+        $query = $this->createBuilder();
 
         if ( ! empty($order) and is_string($order)) {
-            return $this->prepareQuery($this->model)->orderBy($order)->get();
+            return $this->prepareQuery($query)->orderBy($order)->get();
         }
 
         if ( ! empty($order) and is_array($order)) {
-            $build = $this->prepareQuery($this->model);
+            $build = $this->prepareQuery($query);
 
             foreach ($order as $orderItem) {
                 $build = $build->orderBy($orderItem);
@@ -226,7 +234,7 @@ abstract class BaseRepository
             return $build->with($this->withs)->get();
         }
 
-        return $this->prepareQuery($this->model)->get();
+        return $this->prepareQuery($query)->get();
     }
 
     /**
@@ -257,7 +265,7 @@ abstract class BaseRepository
 
         return $this;
     }
-    
+
     /**
      * Adds relations to count
      *
@@ -286,6 +294,18 @@ abstract class BaseRepository
     public function has($relation, $operator = '>=', $value = 1)
     {
         $this->has[] = compact('relation', 'operator', 'value');
+
+        return $this;
+    }
+
+    /**
+     * @param       $scope
+     * @param array $arguments
+     * @return $this
+     */
+    public function addScope($scope, $arguments = [])
+    {
+        $this->scopes[$scope] = $arguments;
 
         return $this;
     }
@@ -336,7 +356,7 @@ abstract class BaseRepository
         if ($this->withCounts) {
             $query = $query->withCount($this->withCounts);
         }
-        
+
         if ($this->orderBy) {
             $query = $query->orderBy($this->orderBy, $this->orderByDirection);
         }
@@ -372,4 +392,28 @@ abstract class BaseRepository
 
         return false;
     }
+
+    /**
+     * Create Builder
+     *
+     * @param $array
+     * @return Builder
+     */
+    protected function createBuilder($array = [])
+    {
+        $builder = $this->model->newQuery();
+
+        if (! empty($array)) {
+            $builder->where($array);
+        }
+
+        if (! empty($this->scopes)) {
+            foreach($this->scopes as $scope=>$args) {
+                $builder->{$scope}($args);
+            }
+        }
+
+        return $builder;
+    }
+
 }
