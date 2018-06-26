@@ -4,6 +4,7 @@ namespace Midnite81\LaravelBase\Commands\Users;
 
 use Illuminate\Console\Command;
 use Illuminate\Database\DatabaseManager;
+use Illuminate\Support\Facades\Hash;
 
 class ResetUsersPassword extends Command
 {
@@ -29,6 +30,13 @@ class ResetUsersPassword extends Command
      * @var DatabaseManager
      */
     protected $db;
+
+    /**
+     * @var int
+     */
+    protected $selectedUser = 0;
+
+    protected $selectedUserFull;
 
     /**
      * Create a new command instance.
@@ -119,31 +127,33 @@ class ResetUsersPassword extends Command
 
         $results = $this->model->where($askColumn, $comparator, $search)->get();
 
-        $this->info($results->count() . ' result(s) were returned');
+        $this->presentUsersToSelect($results);
 
-        dump($results->toArray());
+        $this->askForNewPassword();
+
+        $this->persist();
     }
 
     /**
      * Persist the user
      *
-     * @param $columns
      * @throws \Exception
      */
-    protected function persist($columns)
+    protected function persist()
     {
         $this->db->beginTransaction();
 
         try {
-            $createdUser = $this->model->create($columns);
+            $user = $this->model->find($this->selectedUser);
+            $user->update(['password' => Hash::make($this->password)]);
         } catch (Exception $e) {
             $this->db->rollBack();
             $this->warn('Could not persist to the database: ' . $e->getMessage());
         }
 
         $this->db->commit();
-        $this->info('User persisted');
-        dump($createdUser);
+        $this->info('Password Updated');
+
     }
 
     /**
@@ -163,6 +173,66 @@ class ResetUsersPassword extends Command
         } else {
             $this->info('Cancelled');
             die();
+        }
+    }
+
+    /**
+     * Get the user to select the correct user to update
+     *
+     * @param $results
+     */
+    private function presentUsersToSelect($results)
+    {
+        $this->info($results->count() . ' result(s) were returned');
+
+        if ($results->count() < 1) {
+            die();
+        }
+
+        if ($results->count() == 1) {
+            $detail = [];
+            $keys = array_keys($results->toArray()[0]);
+            foreach ($keys as $key) {
+                $detail[] = $key .':'. $results->first()->{$key};
+            }
+            $this->info("[".$results->first()->id."] : " . implode(', ', $detail));
+
+            $this->info("User selected: [".$results->first()->id."]");
+            $this->selectedUser = $results->first()->id;
+        }
+        
+        if ($results->count() > 1) {
+            $ids = $results->pluck('id')->toArray();
+            $keys = array_keys($results->toArray()[0]);
+
+            foreach($results as $result) {
+                $detail = [];
+                foreach ($keys as $key) {
+                    $detail[] = $key .':'. $result->{$key};
+                }
+
+                $this->info("[$result->id] : " . implode(', ', $detail));
+            }
+
+            while($this->selectedUser == 0) {
+                $selectUser = $this->ask('Which user do you wish to update?');
+                if (in_array($selectUser, $ids)) {
+                    $this->info("User selected: [".$selectUser."]");
+                    $this->selectedUser = $selectUser;
+                }
+            }
+        }
+
+    }
+
+    protected function askForNewPassword()
+    {
+        $this->password = $this->ask('What would you like to set the password to?');
+
+        $q = $this->ask('Confirm you wish to change the password to ' . $this->password . "[y/n]");
+
+        if (strtolower($q) != 'y') {
+            return $this->askForNewPassword();
         }
     }
 }
