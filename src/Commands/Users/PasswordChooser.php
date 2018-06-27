@@ -31,7 +31,7 @@ trait PasswordChooser
     }
 
     /**
-     * Generate a password
+     * Get selection type of generated passwordgit
      */
     public function generatePassword()
     {
@@ -52,6 +52,11 @@ trait PasswordChooser
         }
     }
 
+    /**
+     * Create a generated password
+     *
+     * @param $type
+     */
     public function makeGenerated($type)
     {
         while($this->password == null) {
