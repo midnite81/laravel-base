@@ -225,17 +225,6 @@ class ResetUsersPassword extends Command
                 }
             }
         }
-
     }
-    
-    protected function askForNewPassword()
-    {
-        $this->password = $this->ask('What would you like to set the password to?');
 
-        $q = $this->ask('Confirm you wish to change the password to ' . $this->password . "[y/n]");
-
-        if (strtolower($q) != 'y') {
-            return $this->askForNewPassword();
-        }
-    }
 }

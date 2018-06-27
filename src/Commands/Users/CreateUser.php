@@ -11,6 +11,8 @@ use Mockery\Exception;
 
 class CreateUser extends Command
 {
+    use PasswordChooser;
+
     /**
      * The name and signature of the console command.
      *
@@ -33,6 +35,8 @@ class CreateUser extends Command
      * @var DatabaseManager
      */
     protected $db;
+
+    protected $password = null;
 
     /**
      * Create a new command instance.
@@ -110,17 +114,21 @@ class CreateUser extends Command
         $dbColumns = $this->model->getConnection()->select('SHOW COLUMNS FROM ' . $this->model->getTable());
 
         foreach ($dbColumns as $key => $value) {
-            if (! in_array($value->Field, $ignoredColumns)) {
+            if (!in_array($value->Field, $ignoredColumns)) {
                 $columns[$value->Field] = null;
             }
         }
 
-        foreach($columns as $key => $value) {
-            $ask = $this->ask('Enter value for ' . ucwords(str_replace('_', '', $key)));
-            if ($ask == 'null') {
-                $ask = null;
+        foreach ($columns as $key => $value) {
+            if ($key == 'password') {
+                $columns[$key] = $this->password();
+            } else {
+                $ask = $this->ask('Enter value for ' . ucwords(str_replace('_', '', $key)));
+                if ($ask == 'null') {
+                    $ask = null;
+                }
+                $columns[$key] = $ask;
             }
-            $columns[$key] = $ask;
         }
 
         $columns['password'] = Hash::make($columns['password']);
@@ -170,5 +178,28 @@ class CreateUser extends Command
             $this->info('Cancelled');
             die();
         }
+    }
+
+    /**
+     * Set a normal password
+     *
+     * @return mixed
+     */
+    protected function askForNewPassword()
+    {
+        $this->password = $this->ask('What would you like to set the password to?');
+
+        $q = $this->ask('Confirm the password as "' . $this->password . '" [y/n]');
+
+        if (strtolower($q) != 'y') {
+            return $this->askForNewPassword();
+        }
+    }
+
+    protected function password()
+    {
+        $this->selectTypeOfPassword();
+
+        return $this->password;
     }
 }
