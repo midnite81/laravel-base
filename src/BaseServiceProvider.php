@@ -60,7 +60,6 @@ class BaseServiceProvider extends ServiceProvider
             ChangeEnvVariable::class,
             BackupDatabase::class,
             CreateUser::class,
-            EditUser::class,
             ResetUsersPassword::class,
         ]);
     }
