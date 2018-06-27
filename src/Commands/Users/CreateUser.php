@@ -85,7 +85,6 @@ class CreateUser extends Command
 
             if (!array_key_exists($askModel, $this->models)) {
                 throw new InvalidModelException('The input you gave is not valid');
-                die();
             }
 
             $this->model = new $this->models[$askModel];
