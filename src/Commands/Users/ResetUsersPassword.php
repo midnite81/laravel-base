@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Hash;
 
 class ResetUsersPassword extends Command
 {
+    use PasswordChooser;
+
     /**
      * The name and signature of the console command.
      *
@@ -37,6 +39,8 @@ class ResetUsersPassword extends Command
     protected $selectedUser = 0;
 
     protected $selectedUserFull;
+
+    protected $password;
 
     /**
      * Create a new command instance.
@@ -128,7 +132,7 @@ class ResetUsersPassword extends Command
 
         $this->presentUsersToSelect($results);
 
-        $this->askForNewPassword();
+        $this->selectTypeOfPassword();
 
         $this->persist();
     }
@@ -223,7 +227,7 @@ class ResetUsersPassword extends Command
         }
 
     }
-
+    
     protected function askForNewPassword()
     {
         $this->password = $this->ask('What would you like to set the password to?');
