@@ -56,7 +56,8 @@ trait Sluggable
 
         if ($allRecords) {
             foreach($allRecords as $record) {
-                ($this->find($record->id))->update([
+                $activeRecord = $this->find($record->id);
+                $activeRecord->update([
                     $this->getSlugColumn() => $this->buildSlug()
                 ]);
             }

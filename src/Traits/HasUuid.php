@@ -25,4 +25,21 @@ trait HasUuid
     {
         return 'identifier';
     }
+
+    /**
+     * Update all uuids
+     */
+    public function updateUuids()
+    {
+        $allRecords = $this->all();
+
+        if ($allRecords) {
+            foreach($allRecords as $record) {
+                $activeRecord = $this->find($record->id);
+                $activeRecord->update([
+                    $this->getUuidColumn() => uuid()
+                ]);
+            }
+        }
+    }
 }
