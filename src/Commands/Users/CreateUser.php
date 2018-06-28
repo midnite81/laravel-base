@@ -180,22 +180,6 @@ class CreateUser extends Command
         }
     }
 
-    /**
-     * Set a normal password
-     *
-     * @return mixed
-     */
-    protected function askForNewPassword()
-    {
-        $this->password = $this->ask('What would you like to set the password to?');
-
-        $q = $this->ask('Confirm the password as "' . $this->password . '" [y/n]');
-
-        if (strtolower($q) != 'y') {
-            return $this->askForNewPassword();
-        }
-    }
-
     protected function password()
     {
         $this->selectTypeOfPassword();
