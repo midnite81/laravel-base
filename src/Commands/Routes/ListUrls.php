@@ -13,7 +13,7 @@ class ListUrls extends Command
      *
      * @var string
      */
-    protected $signature = 'm81:urls:list { --verb=null } { --showMethods }';
+    protected $signature = 'm81:urls:list { --method=null } { --showMethods }';
     /**
      * The console command description.
      *
@@ -45,7 +45,7 @@ class ListUrls extends Command
     public function handle()
     {
         $routeCollection = $this->router->getRoutes();
-        $verb = $this->option('verb') == 'null' ? null : $this->option('verb');
+        $verb = $this->option('method') == 'null' ? null : strtoupper($this->option('method'));
 
         if ($routeCollection) {
             foreach ($routeCollection as $route) {
