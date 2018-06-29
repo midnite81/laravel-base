@@ -1,6 +1,6 @@
 <?php
 
-namespace Midnite81\LaravelBase\Commands;
+namespace Midnite81\LaravelBase\Commands\Routes;
 
 use Carbon\Carbon;
 use Illuminate\Console\Command;

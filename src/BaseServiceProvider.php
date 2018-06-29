@@ -5,7 +5,7 @@ namespace Midnite81\LaravelBase;
 use Illuminate\Support\ServiceProvider;
 
 use Midnite81\LaravelBase\Commands\BackupDatabase;
-use Midnite81\LaravelBase\Commands\ListUrls;
+use Midnite81\LaravelBase\Commands\Routes\ListUrls;
 use Midnite81\LaravelBase\Commands\Users\CreateUser;
 use Midnite81\LaravelBase\Commands\Users\EditUser;
 use Midnite81\LaravelBase\Commands\Users\ResetUsersPassword;
