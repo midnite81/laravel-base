@@ -41,10 +41,6 @@ class BaseServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        foreach (glob(__DIR__ . '/Helpers/*.php') as $filename) {
-            require_once($filename);
-        }
-
         $this->mergeConfigFrom(__DIR__ . '/../config/laravel-base.php', 'laravel-base');
 
         $this->app->bind(UuidGenerator::class, UuidGeneratorService::class);

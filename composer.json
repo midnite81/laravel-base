@@ -20,7 +20,12 @@
     "autoload": {
         "psr-4": {
             "Midnite81\\LaravelBase\\": "src/"
-        }
+        },
+        "files": [
+            "src/Helpers/helpers.php",
+            "src/Helpers/carbon.php",
+            "src/Helpers/uuid.php"
+        ]
     },
     "extra": {
         "component": "package",
