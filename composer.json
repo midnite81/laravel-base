@@ -24,6 +24,7 @@
         "files": [
             "src/Helpers/helpers.php",
             "src/Helpers/carbon.php",
+            "src/Helpers/output.php",
             "src/Helpers/uuid.php"
         ]
     },
