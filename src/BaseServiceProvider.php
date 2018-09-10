@@ -5,6 +5,7 @@ namespace Midnite81\LaravelBase;
 use Illuminate\Support\ServiceProvider;
 
 use Midnite81\LaravelBase\Commands\BackupDatabase;
+use Midnite81\LaravelBase\Commands\Environments\CleanCopyEnv;
 use Midnite81\LaravelBase\Commands\Routes\ListUrls;
 use Midnite81\LaravelBase\Commands\Users\CreateUser;
 use Midnite81\LaravelBase\Commands\Users\EditUser;
@@ -59,6 +60,7 @@ class BaseServiceProvider extends ServiceProvider
             CreateUser::class,
             ResetUsersPassword::class,
             ListUrls::class,
+            CleanCopyEnv::class,
         ]);
     }
 }
