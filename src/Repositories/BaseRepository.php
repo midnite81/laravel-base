@@ -1,9 +1,11 @@
 <?php
+
 namespace Midnite81\LaravelBase\Repositories;
 
 use Illuminate\Database\Query\Builder;
+use Midnite81\LaravelBase\Contracts\Repositories\BaseRepository as BaseRepositoryContract;
 
-abstract class BaseRepository
+abstract class BaseRepository implements BaseRepositoryContract
 {
     /**
      * An array of relationships to eager load.
@@ -53,27 +55,6 @@ abstract class BaseRepository
     protected $orderByDirection = 'ASC';
 
     /**
-     * Find record
-     *
-     * @param $id
-     * @return mixed
-     */
-    public function findRecord($id)
-    {
-        if (is_object($id)) {
-            return $id;
-        }
-
-        if (is_numeric($id) or $this->shouldBeNumber($id)) {
-            return $this->findById($id);
-        }
-
-        if (is_string($id)) {
-            return $this->findByIdentifier($id);
-        }
-    }
-
-    /**
      * Check to see if record exists
      *
      * @param $id
@@ -93,6 +74,23 @@ abstract class BaseRepository
     }
 
     /**
+     * Determines if the ID should be a number.
+     *
+     * @param $id
+     * @return bool
+     */
+    protected function shouldBeNumber($id)
+    {
+        $pattern = "/^[0-9]+?$/";
+
+        if (preg_match($pattern, $id)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Find record by Id
      *
      * @param      $id
@@ -108,6 +106,39 @@ abstract class BaseRepository
         }
 
         return $record;
+    }
+
+    /**
+     * Prepare the query for execution
+     *
+     * @param $query
+     * @return mixed
+     */
+    protected function prepareQuery($query)
+    {
+        $query = $query->with($this->withs);
+
+        if ($this->withCounts) {
+            $query = $query->withCount($this->withCounts);
+        }
+
+        if ($this->orderBy) {
+            $query = $query->orderBy($this->orderBy, $this->orderByDirection);
+        }
+
+        if ( ! empty($this->has)) {
+            foreach ($this->has as $has) {
+                $query = $query->has($has['relation'], $has['operator'], $has['value']);
+            }
+        }
+
+        if ( ! empty($this->whereHas)) {
+            foreach ($this->whereHas as $has) {
+                $query = $query->whereHas($has[0], isset($has[1]) ? $has[1] : null);
+            }
+        }
+
+        return $query;
     }
 
     /**
@@ -139,6 +170,28 @@ abstract class BaseRepository
         return $this->prepareQuery($this->createBuilder($array))->first();
     }
 
+    /**
+     * Create Builder
+     *
+     * @param $array
+     * @return Builder
+     */
+    protected function createBuilder($array = [])
+    {
+        $builder = $this->model->newQuery();
+
+        if ( ! empty($array)) {
+            $builder->where($array);
+        }
+
+        if ( ! empty($this->scopes)) {
+            foreach ($this->scopes as $scope => $args) {
+                $builder->{$scope}($args);
+            }
+        }
+
+        return $builder;
+    }
 
     /**
      * Find by an array of credentials (return all)
@@ -162,7 +215,6 @@ abstract class BaseRepository
         return $this->model->create($data);
     }
 
-
     /**
      * Update a record
      *
@@ -179,6 +231,27 @@ abstract class BaseRepository
 
         return $model;
 
+    }
+
+    /**
+     * Find record
+     *
+     * @param $id
+     * @return mixed
+     */
+    public function findRecord($id)
+    {
+        if (is_object($id)) {
+            return $id;
+        }
+
+        if (is_numeric($id) or $this->shouldBeNumber($id)) {
+            return $this->findById($id);
+        }
+
+        if (is_string($id)) {
+            return $this->findByIdentifier($id);
+        }
     }
 
     /**
@@ -206,6 +279,7 @@ abstract class BaseRepository
         if ($model) {
             return $model->delete();
         }
+
         return false;
 
     }
@@ -305,7 +379,7 @@ abstract class BaseRepository
      */
     public function addScope($scope, $arguments = [])
     {
-        $this->scopes[$scope] = $arguments;
+        $this->scopes[ $scope ] = $arguments;
 
         return $this;
     }
@@ -327,7 +401,6 @@ abstract class BaseRepository
         return $this;
     }
 
-
     /**
      * Orders the query
      *
@@ -341,79 +414,6 @@ abstract class BaseRepository
         $this->orderByDirection = $direction;
 
         return $this;
-    }
-
-    /**
-     * Prepare the query for execution
-     *
-     * @param $query
-     * @return mixed
-     */
-    protected function prepareQuery($query)
-    {
-        $query = $query->with($this->withs);
-
-        if ($this->withCounts) {
-            $query = $query->withCount($this->withCounts);
-        }
-
-        if ($this->orderBy) {
-            $query = $query->orderBy($this->orderBy, $this->orderByDirection);
-        }
-
-        if ( ! empty($this->has)) {
-            foreach ($this->has as $has) {
-                $query = $query->has($has['relation'], $has['operator'], $has['value']);
-            }
-        }
-
-        if ( ! empty($this->whereHas)) {
-            foreach ($this->whereHas as $has) {
-                $query = $query->whereHas($has[0], isset($has[1]) ? $has[1] : null);
-            }
-        }
-
-        return $query;
-    }
-
-    /**
-     * Determines if the ID should be a number.
-     *
-     * @param $id
-     * @return bool
-     */
-    protected function shouldBeNumber($id)
-    {
-        $pattern = "/^[0-9]+?$/";
-
-        if (preg_match($pattern, $id)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Create Builder
-     *
-     * @param $array
-     * @return Builder
-     */
-    protected function createBuilder($array = [])
-    {
-        $builder = $this->model->newQuery();
-
-        if (! empty($array)) {
-            $builder->where($array);
-        }
-
-        if (! empty($this->scopes)) {
-            foreach($this->scopes as $scope=>$args) {
-                $builder->{$scope}($args);
-            }
-        }
-
-        return $builder;
     }
 
 }
