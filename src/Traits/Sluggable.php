@@ -48,6 +48,28 @@ trait Sluggable
     }
 
     /**
+     * Build the slug
+     *
+     * @return string
+     */
+    public function buildSlug()
+    {
+        $name = $this->getAttribute($this->getSluggableColumn());
+        return str_slug($name . '-' . $this->getAttribute('id'));
+    }
+
+    /**
+     * Saves Slug to Model
+     *
+     * @param $model
+     */
+    public function saveSlugToModel($model)
+    {
+        $model->{$model->getSlugColumn()} = $model->buildSlug();
+        $model->save();
+    }
+
+    /**
      * Update all slugs
      */
     public function updateSlugs()
@@ -77,14 +99,5 @@ trait Sluggable
             || ! property_exists($model, 'sluggableEvents');
     }
 
-    /**
-     * Build the slug
-     *
-     * @return string
-     */
-    protected function buildSlug()
-    {
-        $name = $this->getAttribute($this->getSluggableColumn());
-        return str_slug($name . '-' . $this->getAttribute('id'));
-    }
+
 }
