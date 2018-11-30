@@ -65,7 +65,7 @@ class CleanCopyEnv extends Command
             $env = $this->files->get($envFilePath);
             $saveLocation = $this->app->environmentPath() . DIRECTORY_SEPARATOR . $this->copyName;
 
-            $freshCopy = preg_replace('/=.*?[\r\n$]/', "=\r\n", $env);
+            $freshCopy = preg_replace('/=.*?[\n$]/', "=\n", $env);
 
             $this->files->put($saveLocation, $freshCopy);
             $this->info('Blank env stored at: ' . $saveLocation);
