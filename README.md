@@ -20,5 +20,5 @@ which should include the dump-autoload command.
 
 Documentation 
 
-[Searchable Trait](https://github.com/midnite81/laravel-base/blob/master/docs/searchable.md)
-[Helpers](https://github.com/midnite81/laravel-base/blob/master/docs/helpers.md)
+- [Searchable Trait](docs/searchable.md)   
+- [Helpers](docs/helpers.md)
