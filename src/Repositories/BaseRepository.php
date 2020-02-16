@@ -150,7 +150,9 @@ abstract class BaseRepository implements BaseRepositoryContract
      */
     public function findByIdentifier($uuid, $checkExists = false)
     {
-        $record = $this->prepareQuery($this->model->where('identifier', $uuid))->first();
+        $columnName = $this->model->getUuidColumn() ?? 'identifier';
+
+        $record = $this->prepareQuery($this->model->where($columnName, $uuid))->first();
 
         if ($checkExists) {
             return ! empty($record);
